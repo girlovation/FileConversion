@@ -1,17 +1,16 @@
 package com.acn.file.conversion.tool.gui;
+
 /**
  * 
  */
 
 /**
  * @author atasi.dutta
+
  *
  */
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -27,18 +26,18 @@ public class FileConversionEntryPage {
 	private JPanel buttonPanel;
 	private ButtonGroup group;
 	private static final int DEFAULT_SIZE = 12;
-	private JLabel outsideLabel;
-	private JLabel insideLabel;
+	private JLabel outerLabelPageName;
+	private JLabel insideLabelSelectionType;
 
 
 	public void start() 
 	{ 
 		JFrame frame=new JFrame(); 
 		//Add Jlabel
-		outsideLabel = new JLabel("File Conversion Tool",SwingConstants.CENTER);
-		outsideLabel.setLayout(new FlowLayout(FlowLayout.CENTER, 2, 2));
-		insideLabel = new JLabel("Select File Comversion Type",SwingConstants.RIGHT);
-		outsideLabel.add(insideLabel);
+		outerLabelPageName = new JLabel("File Conversion Tool",SwingConstants.CENTER);
+		outerLabelPageName.setLayout(new FlowLayout(FlowLayout.CENTER, 2, 2));
+		insideLabelSelectionType = new JLabel("Select File Comversion Type",SwingConstants.RIGHT);
+		outerLabelPageName.add(insideLabelSelectionType);
        //Add Radio Button
 		buttonPanel  = new JPanel();
 	    group = new ButtonGroup();
@@ -47,10 +46,10 @@ public class FileConversionEntryPage {
 	      addRadioButton("XMLToCSV", 8);
 	      addRadioButton("CSVToXML", 8);
 	     
-	      outsideLabel.add(buttonPanel,BorderLayout.CENTER);
+	      outerLabelPageName.add(buttonPanel,BorderLayout.CENTER);
 	      
 	      
-		frame.getContentPane().add(outsideLabel); 
+		frame.getContentPane().add(outerLabelPageName); 
 		frame.setSize(200,200); 
 		frame.setVisible(true); 
 		} 
