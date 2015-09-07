@@ -1,6 +1,7 @@
 package com.acn.file.conversion.tool.gui;
 
 import java.awt.Font;
+import java.awt.event.ActionListener;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -10,23 +11,18 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 
-public class FileConversionEntryPage extends JPanel {
+import com.sun.org.apache.regexp.internal.recompile;
 
-	JFrame jframe ;
-  public FileConversionEntryPage() {
-	  
-	   jframe = new JFrame();
-	   jframe.getContentPane().add(new TestPage());
+public class TestPage extends JPanel {
+	
+	private static JFrame frame;
 
-	    jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    jframe.setSize(300,300);
-	    jframe.setVisible(true);
-	    jframe.setResizable(false);
+  public TestPage() {
 	  
-	 JLabel fileConversionToolLabel = new JLabel("Next frame",
+	 JLabel fileConversionToolLabel = new JLabel("File Conversion Tool",
 				SwingConstants.CENTER);
 	 
-	 JLabel selectionTypeLabel = new JLabel("Helloooooooo",
+	 JLabel selectionTypeLabel = new JLabel("Select Converion Type",
 				SwingConstants.CENTER);
 	 
 	  
@@ -65,8 +61,32 @@ public class FileConversionEntryPage extends JPanel {
     jsonToCsvRadio.setBounds(30, 160, 100, 20);
     submitButton.setBounds(100,210,80,20);
 
+    submitButton.addActionListener( new ActionListener() {
+    	public void actionPerformed(java.awt.event.ActionEvent e) {
+    		 
+    		   frame.setVisible(false);
+    		   frame.dispose();
+    		   
+    		   FileConversionEntryPage newFrameObj =  new FileConversionEntryPage();
+    		   newFrameObj.jframe.repaint();
+    		 
+    		  
+    		}
+    });
+    
+    
   }
 
- 
+  public static void main(String[] args) {
+    frame = new JFrame();
+    frame.getContentPane().add(new TestPage());
 
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setSize(300,300);
+    frame.setVisible(true);
+    frame.setResizable(false);
+  }
+  
+  
+  
 }
