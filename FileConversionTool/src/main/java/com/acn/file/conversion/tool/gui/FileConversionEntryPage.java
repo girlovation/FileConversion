@@ -16,7 +16,7 @@ public class FileConversionEntryPage extends JPanel {
   public FileConversionEntryPage() {
 	  
 	   jframe = new JFrame();
-	   jframe.getContentPane().add(new TestPage());
+	   jframe.getContentPane().add(this);
 
 	    jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    jframe.setSize(300,300);
