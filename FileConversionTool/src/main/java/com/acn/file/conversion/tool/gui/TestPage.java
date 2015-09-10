@@ -3,7 +3,9 @@ package com.acn.file.conversion.tool.gui;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Enumeration;
 
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -12,17 +14,18 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 
-import com.sun.org.apache.regexp.internal.recompile;
+import com.acn.file.conversion.tool.constants.FileConversionConstants;
 
 public class TestPage extends JPanel implements ActionListener {
 
 	JFrame frame;
+	ButtonGroup radioGroup;
 
 	public TestPage() {
 
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(300, 300);
+		frame.setSize(300,300);
 		frame.setVisible(true);
 		frame.setResizable(false);
 
@@ -34,11 +37,11 @@ public class TestPage extends JPanel implements ActionListener {
 
 		JRadioButton csvToXmlRadio = new JRadioButton("CSV to XML", true);
 		JRadioButton xmlToCsvRadio = new JRadioButton("XML to CSV", false);
-		JRadioButton jsonToCsvRadio = new JRadioButton("Json to CSV", false);
+		JRadioButton jsonToCsvRadio = new JRadioButton(FileConversionConstants.JSON_TO_CSV, false);
 
 		JButton submitButton = new JButton("Submit");
 
-		ButtonGroup radioGroup = new ButtonGroup();
+		radioGroup = new ButtonGroup();
 
 		setLayout(null);
 
@@ -55,8 +58,7 @@ public class TestPage extends JPanel implements ActionListener {
 
 		Font font = fileConversionToolLabel.getFont();
 
-		fileConversionToolLabel.setFont(new Font(font.getFontName(), Font.BOLD,
-				15));
+		fileConversionToolLabel.setFont(new Font(font.getFontName(), Font.BOLD,15));
 
 		fileConversionToolLabel.setBounds(50, 10, 200, 20);
 		selectionTypeLabel.setBounds(20, 70, 150, 20);
@@ -79,14 +81,25 @@ public class TestPage extends JPanel implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		System.out.println("Action Performed = " + e.getSource());
-		this.frame.setVisible(false);
-		this.frame.dispose();
+		
+		
+		 Enumeration<AbstractButton> allRadioButton=radioGroup.getElements();  
+		    while(allRadioButton.hasMoreElements())  
+		    {  
+		       JRadioButton tempSelectedButton=(JRadioButton)allRadioButton.nextElement();  
+		       if(tempSelectedButton.isSelected() && tempSelectedButton.getText().equalsIgnoreCase(FileConversionConstants.JSON_TO_CSV))  
+		       {  
+		    	   this.frame.setVisible(false);
+		   		   this.frame.dispose();
 
-		FileConversionEntryPage newFrameObj = new FileConversionEntryPage();
-		newFrameObj.setVisible(true);
-		//newFrameObj.jframe.repaint();
+		   		FileConversionEntryPage newFrameObj = new FileConversionEntryPage();
+		   		newFrameObj.setVisible(true);
 
-	}
+		    	  
+		       }  
+		    }   
+		    
+					
+	    }
 
 }
