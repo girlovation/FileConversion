@@ -25,15 +25,12 @@ public class App {
 		try {
 
 			JobExecution execution = jobLauncher.run(job, new JobParameters());
-			System.out.println("Exit Status : " + execution.getStatus());
 			LOGGER.info("Exit Status : " + execution.getStatus());
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		System.out.println("Done");
-		LOGGER.info("Done");
 
 	}
 }
