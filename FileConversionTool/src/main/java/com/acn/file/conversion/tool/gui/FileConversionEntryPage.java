@@ -21,6 +21,7 @@ public class FileConversionEntryPage extends JPanel implements ActionListener {
 
 	public FileConversionEntryPage() {
 
+		
 		fileConversionMainframe = new JFrame();
 		fileConversionMainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		fileConversionMainframe.setSize(300, 300);

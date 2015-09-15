@@ -1,19 +1,29 @@
 package com.acn.file.conversion.tool.gui;
 
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Enumeration;
+
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import com.acn.file.conversion.tool.constants.FileConversionConstants;
 
-public class JsonToCsvPage extends JPanel {
+import com.acn.file.conversion.tool.constants.FileConversionConstants;
+import com.acn.file.conversion.tool.utils.FormatJSONFile;
+
+public class JsonToCsvPage extends JPanel implements ActionListener{
 
 	JFrame jsonToCsvFrame;
+	JTextField inputFilePathTextField;
+	JTextField outputFilePathTextField ;
 
 	public JsonToCsvPage() {
 
@@ -27,9 +37,9 @@ public class JsonToCsvPage extends JPanel {
 		JLabel fileConversionToolLabel = new JLabel(
 				FileConversionConstants.JSON_TO_CSV, SwingConstants.CENTER);
 
-		JTextField inputFilePathTextField = new JTextField();
+		 inputFilePathTextField = new JTextField();
 
-		JTextField outputFilePathTextField = new JTextField();
+		 outputFilePathTextField = new JTextField();
 
 		JLabel inputFilePathLabel = new JLabel(
 				FileConversionConstants.INPUT_FILE_PATH);
@@ -56,7 +66,9 @@ public class JsonToCsvPage extends JPanel {
 		JRadioButton includeHeadersRadioButton = new JRadioButton(
 				FileConversionConstants.INCLUDE_HEADERS, false);
 
-		JButton submitButton = new JButton("Submit");
+		JButton jsonToCsvSubmitButton = new JButton("Submit");
+		
+		jsonToCsvSubmitButton.addActionListener(this);
 
 		ButtonGroup fieldSeparatorRadioGroup = new ButtonGroup();
 
@@ -78,6 +90,7 @@ public class JsonToCsvPage extends JPanel {
 		add(outputFilePathTextField);
 		add(wrapValuesRadioButton);
 		add(includeHeadersRadioButton);
+		add(jsonToCsvSubmitButton);
 
 		Font headerFont = fileConversionToolLabel.getFont();
 
@@ -96,8 +109,23 @@ public class JsonToCsvPage extends JPanel {
 		colon.setBounds(350, 160, 100, 20);
 		wrapValuesRadioButton.setBounds(30, 190, 280, 20);
 		includeHeadersRadioButton.setBounds(30, 220, 280, 20);
-		submitButton.setBounds(100, 210, 80, 20);
+		jsonToCsvSubmitButton.setBounds(220, 280, 100, 20);
 
+	}
+	
+	public void actionPerformed(ActionEvent e) {
+		
+		if(null !=inputFilePathTextField.getText() && !inputFilePathTextField.getText().equalsIgnoreCase("") &&
+				null !=outputFilePathTextField.getText() && !outputFilePathTextField.getText().equalsIgnoreCase("")){
+			
+			FormatJSONFile formatJSONFileObj = new FormatJSONFile();
+			formatJSONFileObj.formatJsonFile(inputFilePathTextField.getText(), outputFilePathTextField.getText());
+		
+		}else{
+			JOptionPane.showMessageDialog(jsonToCsvFrame,"Please enter both Input and Output file Paths");
+		}
+	
+		
 	}
 
 }
