@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
+import java.util.Map;
 
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
@@ -16,14 +17,16 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import org.springframework.batch.core.launch.support.CommandLineJobRunner;
+
 import com.acn.file.conversion.tool.constants.FileConversionConstants;
 import com.acn.file.conversion.tool.utils.FormatJSONFile;
 
-public class JsonToCsvPage extends JPanel implements ActionListener{
+public class JsonToCsvPage extends JPanel implements ActionListener {
 
 	JFrame jsonToCsvFrame;
 	JTextField inputFilePathTextField;
-	JTextField outputFilePathTextField ;
+	JTextField outputFilePathTextField;
 
 	public JsonToCsvPage() {
 
@@ -37,9 +40,9 @@ public class JsonToCsvPage extends JPanel implements ActionListener{
 		JLabel fileConversionToolLabel = new JLabel(
 				FileConversionConstants.JSON_TO_CSV, SwingConstants.CENTER);
 
-		 inputFilePathTextField = new JTextField();
+		inputFilePathTextField = new JTextField();
 
-		 outputFilePathTextField = new JTextField();
+		outputFilePathTextField = new JTextField();
 
 		JLabel inputFilePathLabel = new JLabel(
 				FileConversionConstants.INPUT_FILE_PATH);
@@ -67,7 +70,7 @@ public class JsonToCsvPage extends JPanel implements ActionListener{
 				FileConversionConstants.INCLUDE_HEADERS, false);
 
 		JButton jsonToCsvSubmitButton = new JButton("Submit");
-		
+
 		jsonToCsvSubmitButton.addActionListener(this);
 
 		ButtonGroup fieldSeparatorRadioGroup = new ButtonGroup();
@@ -94,8 +97,8 @@ public class JsonToCsvPage extends JPanel implements ActionListener{
 
 		Font headerFont = fileConversionToolLabel.getFont();
 
-		fileConversionToolLabel.setFont(new Font(headerFont.getFontName(), Font.BOLD,
-				15));
+		fileConversionToolLabel.setFont(new Font(headerFont.getFontName(),
+				Font.BOLD, 15));
 
 		fileConversionToolLabel.setBounds(50, 10, 200, 20);
 		inputFilePathLabel.setBounds(30, 70, 250, 20);
@@ -112,20 +115,36 @@ public class JsonToCsvPage extends JPanel implements ActionListener{
 		jsonToCsvSubmitButton.setBounds(220, 280, 100, 20);
 
 	}
-	
+
 	public void actionPerformed(ActionEvent e) {
-		
-		if(null !=inputFilePathTextField.getText() && !inputFilePathTextField.getText().equalsIgnoreCase("") &&
-				null !=outputFilePathTextField.getText() && !outputFilePathTextField.getText().equalsIgnoreCase("")){
-			
+
+		if (null != inputFilePathTextField.getText()
+				&& !inputFilePathTextField.getText().equalsIgnoreCase("")
+				&& null != outputFilePathTextField.getText()
+				&& !outputFilePathTextField.getText().equalsIgnoreCase("")) {
+
 			FormatJSONFile formatJSONFileObj = new FormatJSONFile();
-			formatJSONFileObj.formatJsonFile(inputFilePathTextField.getText(), outputFilePathTextField.getText());
-		
-		}else{
-			JOptionPane.showMessageDialog(jsonToCsvFrame,"Please enter both Input and Output file Paths");
+			Map<String, Object> inputHeaderMap = formatJSONFileObj.formatJsonFile(inputFilePathTextField.getText(),
+					outputFilePathTextField.getText());
+			
+			
+			try {
+				CommandLineJobRunner.main(new String[] { "applicationContext.xml",
+						"jsonToCsvBatchJob",
+						"inputPath=" + inputFilePathTextField.getText(),
+						"outputPath=" + outputFilePathTextField.getText() });
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				
+				JOptionPane.showMessageDialog(jsonToCsvFrame,ex.getMessage()
+						);
+			}
+
+		} else {
+			JOptionPane.showMessageDialog(jsonToCsvFrame,
+					"Please enter both Input and Output file Paths");
 		}
-	
-		
+
 	}
 
 }

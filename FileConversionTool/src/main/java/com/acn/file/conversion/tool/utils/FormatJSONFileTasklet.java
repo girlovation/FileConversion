@@ -32,6 +32,8 @@ public class FormatJSONFileTasklet implements Tasklet {
 			throws Exception {
 
 		try {
+			
+		
 			File file = new File(unformattedFile);
 			Reader reader = new FileReader(file);
 			OutputStream out = new FileOutputStream(inputFile);

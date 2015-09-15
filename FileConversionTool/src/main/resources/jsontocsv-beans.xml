@@ -36,9 +36,9 @@
 
 	<!-- Spring Batch Job -->
 	<batch:job id="jsonToCsvBatchJob">
-		<batch:step id="formatJSONFile" next="jsonToCsvBatchStepId"> <batch:tasklet 
+		<!-- <batch:step id="formatJSONFile" next="jsonToCsvBatchStepId"> <batch:tasklet 
 			ref="formatJSONFileTasklet"> </batch:tasklet> </batch:step>
-
+ -->
 		<batch:step id="jsonToCsvBatchStepId">
 			<batch:tasklet>
 				<batch:chunk reader="jsonToCsvFlatFileItemReader"
@@ -73,18 +73,22 @@
 	<bean id="formatJSONFileTasklet" class="com.acn.file.conversion.tool.utils.FormatJSONFileTasklet"></bean>
 
 	<!-- Reader -->
-	<bean id="jsonToCsvFlatFileItemReader" class="org.springframework.batch.item.file.FlatFileItemReader">
+	<bean id="jsonToCsvFlatFileItemReader" class="org.springframework.batch.item.file.FlatFileItemReader" scope="step">
 		<!-- Read a json file -->
-		<property name="resource" value="file:${jsonInputFile}" />
+		<property name="resource" value="file:#{jobParameters['inputPath']}" />
 		<property name="recordSeparatorPolicy" ref="recordPolicy" />
 		<property name="lineMapper" ref="lineMapper" />
 	</bean>
 
-	<bean id="lineMapper" class="com.acn.file.conversion.tool.utils.JsonToCsvLineMapper">
+	<!-- <bean id="lineMapper" class="com.acn.file.conversion.tool.utils.JsonToCsvLineMapper">
 		<property name="delegate" ref="lineMapperType" />
 	</bean>
 
 	<bean id="lineMapperType"
+		class="org.springframework.batch.item.file.mapping.JsonLineMapper">
+	</bean> -->
+	
+	<bean id="lineMapper"
 		class="org.springframework.batch.item.file.mapping.JsonLineMapper">
 	</bean>
 
@@ -93,8 +97,8 @@
 
 
 	<bean class="org.springframework.batch.item.file.FlatFileItemWriter"
-		id="jsonToCsvFlatFileItemWriter">
-		<property name="resource" value="file:${csvOutputFilePath}" />
+		id="jsonToCsvFlatFileItemWriter" scope="step">
+		<property name="resource" value="file:#{jobParameters['outputPath']}" />
 		<!-- <property name="headerCallback"> <bean class="com.acn.file.conversion.tool.vos.ProductHeader" 
 			/> </property> -->
 		<property name="lineAggregator">
