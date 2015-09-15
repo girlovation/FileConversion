@@ -7,7 +7,7 @@ import java.util.Set;
 import org.springframework.batch.item.file.LineMapper;
 import org.springframework.batch.item.file.mapping.JsonLineMapper;
 
-import com.acn.file.conversion.tool.vos.JsonToCsvInputVO;
+import com.acn.file.conversion.tool.vo.JsonToCsvInputVO;
 
 public class JsonToCsvLineMapper implements LineMapper<JsonToCsvInputVO> {
 	// private static final Logger LOGGER =

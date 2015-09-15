@@ -3,6 +3,7 @@ package com.acn.file.conversion.tool.gui;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Map;
 
@@ -16,10 +17,12 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.tools.JavaFileObject;
 
 import org.springframework.batch.core.launch.support.CommandLineJobRunner;
 
 import com.acn.file.conversion.tool.constants.FileConversionConstants;
+import com.acn.file.conversion.tool.utils.CreateDynamicClass;
 import com.acn.file.conversion.tool.utils.FormatJSONFile;
 
 public class JsonToCsvPage extends JPanel implements ActionListener {
@@ -127,6 +130,12 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 			Map<String, Object> inputHeaderMap = formatJSONFileObj.formatJsonFile(inputFilePathTextField.getText(),
 					outputFilePathTextField.getText());
 			
+			CreateDynamicClass createDynamicClassObj = new CreateDynamicClass();
+			JavaFileObject javaFileObj = createDynamicClassObj.generateJava(FileConversionConstants.JSON_INPUT_VO, inputHeaderMap);
+			Iterable<? extends JavaFileObject> files = Arrays.asList(javaFileObj);
+
+			// 2.Compile your files by JavaCompiler
+			createDynamicClassObj.compile(files);
 			
 			try {
 				CommandLineJobRunner.main(new String[] { "applicationContext.xml",

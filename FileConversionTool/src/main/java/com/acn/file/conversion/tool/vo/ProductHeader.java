@@ -1,4 +1,4 @@
-package com.acn.file.conversion.tool.vos;
+package com.acn.file.conversion.tool.vo;
 
 import java.io.IOException;
 import java.io.Writer;
