@@ -6,8 +6,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import javax.tools.Diagnostic;
@@ -19,16 +21,16 @@ import javax.tools.ToolProvider;
 
 import com.acn.file.conversion.tool.constants.DynamicCompiler.InMemoryJavaFileObject;
 import com.acn.file.conversion.tool.constants.FileConversionConstants;
+import com.acn.file.conversion.tool.vo.DynamicJsonInV;
 
 public class CreateDynamicClass {
-
 
 	public JavaFileObject generateJava(String className, Map<String, Object> map) {
 
 		StringBuffer classContent = new StringBuffer(
-				"package com.acn.file.conversion.tool.vo; \n public class ")
+				"package com.acn.file.conversion.tool.vo; \n import java.util.LinkedHashMap; \n  public class ")
 				.append(className).append(" {\n");
-		
+
 		// first fields
 		for (Entry<String, Object> field : map.entrySet()) {
 			String name = field.getKey();
@@ -36,19 +38,20 @@ public class CreateDynamicClass {
 			classContent.append("\tprivate ").append(type).append(" ")
 					.append(name).append(";\n");
 		}
-		
+
 		// then getters and setters
 		for (Entry<String, Object> field : map.entrySet()) {
 			String name = field.getKey();
 			String type = field.getValue().getClass().getName();
 			classContent.append("\n\n");
-			
+
 			// getter.
+
 			classContent.append("\tpublic ").append(type).append(" get")
 					.append(name.substring(0, 1).toUpperCase())
 					.append(name.substring(1)).append("() {\n\t\t");
 			classContent.append("return this.").append(name).append(";\n\t}");
-			
+
 			// setter.
 			classContent.append("\tpublic void").append(" set")
 					.append(name.substring(0, 1).toUpperCase())
@@ -58,7 +61,23 @@ public class CreateDynamicClass {
 					.append(name).append(";\n\t}");
 		}
 
-		classContent.append("}");
+		// hardcoded method signature
+
+		classContent
+				.append("\n\n\t public static DynamicJsonInVO setAllFields(LinkedHashMap<String, Object> valueMap) { \n\t\t DynamicJsonInVO tempDynamicObj = new DynamicJsonInVO();\n");
+
+		for (Entry<String, Object> field : map.entrySet()) {
+			String fieldName = field.getKey();
+
+			classContent
+					.append("\t\t\t tempDynamicObj.set")
+					.append(fieldName.substring(0, 1).toUpperCase())
+					.append(fieldName.substring(1))
+					.append("(valueMap.get(\"" + fieldName
+							+ "\").toString()); \n");
+		}
+
+		classContent.append(" \t\t return tempDynamicObj; \n } \n }");
 
 		System.out.println("value=" + classContent);
 		JavaFileObject javaFileObj = null;
@@ -90,22 +109,23 @@ public class CreateDynamicClass {
 		return javaFileObj;
 	}
 
-	/*public static void main(String args[]) {
-		CreateDynamicClass myObj = new CreateDynamicClass();
-
-		Map<String, Object> testMap = new HashMap<String, Object>();
-
-		testMap.put("iD", "String");
-		testMap.put("name", "String");
-
-		JavaFileObject file = myObj.generateJava(FileConversionConstants.JSON_INPUT_VO, testMap);
-
-		Iterable<? extends JavaFileObject> files = Arrays.asList(file);
-
-		// 2.Compile your files by JavaCompiler
-		compile(files);
-
-	}*/
+	/*
+	 * public static void main(String args[]) { CreateDynamicClass myObj = new
+	 * CreateDynamicClass();
+	 * 
+	 * Map<String, Object> testMap = new HashMap<String, Object>();
+	 * 
+	 * testMap.put("iD", "String"); testMap.put("name", "String");
+	 * 
+	 * JavaFileObject file =
+	 * myObj.generateJava(FileConversionConstants.JSON_INPUT_VO, testMap);
+	 * 
+	 * Iterable<? extends JavaFileObject> files = Arrays.asList(file);
+	 * 
+	 * // 2.Compile your files by JavaCompiler compile(files);
+	 * 
+	 * }
+	 */
 
 	public static class MyDiagnosticListener implements
 			DiagnosticListener<JavaFileObject> {
@@ -121,7 +141,7 @@ public class CreateDynamicClass {
 	}
 
 	/** compile your files by JavaCompiler */
-	public  void compile(Iterable<? extends JavaFileObject> files) {
+	public void compile(Iterable<? extends JavaFileObject> files) {
 		// get system compiler:
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
@@ -131,7 +151,8 @@ public class CreateDynamicClass {
 		StandardJavaFileManager fileManager = compiler.getStandardFileManager(
 				diagnosticListner, Locale.ENGLISH, null);
 		// specify classes output folder
-		Iterable options = Arrays.asList("-d", FileConversionConstants.CLASS_FOLDER_PATH);
+		Iterable options = Arrays.asList("-d",
+				FileConversionConstants.CLASS_FOLDER_PATH);
 		JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager,
 				diagnosticListner, options, null, files);
 		Boolean result = task.call();

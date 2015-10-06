@@ -4,12 +4,15 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.tools.JavaFileObject;
+
 import org.springframework.batch.item.file.LineMapper;
 import org.springframework.batch.item.file.mapping.JsonLineMapper;
 
-import com.acn.file.conversion.tool.vo.JsonToCsvInputVO;
+import com.acn.file.conversion.tool.constants.DynamicCompiler.InMemoryJavaFileObject;
+import com.acn.file.conversion.tool.vo.DynamicJsonInVO;
 
-public class JsonToCsvLineMapper implements LineMapper<JsonToCsvInputVO> {
+public class JsonToCsvLineMapper implements LineMapper<DynamicJsonInVO> {
 	// private static final Logger LOGGER =
 	// Logger.getLogger(JsonToCsvLineMapper.class);
 	private JsonLineMapper delegate;
@@ -22,7 +25,7 @@ public class JsonToCsvLineMapper implements LineMapper<JsonToCsvInputVO> {
 		this.delegate = delegate;
 	}
 
-	public JsonToCsvInputVO mapLine(String line, int lineNumber)
+	public DynamicJsonInVO mapLine(String line, int lineNumber)
 			throws Exception {
 
 		LinkedHashMap<String, Object> recordAsMap = (LinkedHashMap<String, Object>) delegate
@@ -32,8 +35,12 @@ public class JsonToCsvLineMapper implements LineMapper<JsonToCsvInputVO> {
 			System.out.println(entry.getKey() + ":" + entry.getValue());
 			
 		}*/
+		
+  
+		
+		return DynamicJsonInVO.setAllFields(recordAsMap);
 
-		Set<String> keys = recordAsMap.keySet();
+		/*Set<String> keys = recordAsMap.keySet();
 
 		JsonToCsvInputVO jsonToCsvInputVO = new JsonToCsvInputVO();
 
@@ -57,7 +64,7 @@ public class JsonToCsvLineMapper implements LineMapper<JsonToCsvInputVO> {
 		} else {
 			jsonToCsvInputVO.setBrand(recordAsMap.get("brand").toString());
 		}
-
-		return jsonToCsvInputVO;
+*/
+		//return jsonToCsvInputVO;
 	}
 }

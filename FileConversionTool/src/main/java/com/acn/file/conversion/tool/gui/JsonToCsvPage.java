@@ -4,10 +4,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.Map;
-
-import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -129,6 +126,8 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 			FormatJSONFile formatJSONFileObj = new FormatJSONFile();
 			Map<String, Object> inputHeaderMap = formatJSONFileObj.formatJsonFile(inputFilePathTextField.getText(),
 					outputFilePathTextField.getText());
+			
+			System.out.println(FormatJSONFile.outputHeader);
 			
 			CreateDynamicClass createDynamicClassObj = new CreateDynamicClass();
 			JavaFileObject javaFileObj = createDynamicClassObj.generateJava(FileConversionConstants.JSON_INPUT_VO, inputHeaderMap);

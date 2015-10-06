@@ -16,7 +16,7 @@
 
 	<context:annotation-config />
 	<tx:annotation-driven />
-	<context:component-scan base-package="com.kohls.jsontocsv.*" />
+	<context:component-scan base-package="com.acn.file.conversion.tool.*" />
 
 	<bean id="propertiesConfig"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -29,16 +29,9 @@
 		</property>
 	</bean>
 
-	<!-- Input VO -->
-	<bean id="jsonToCsvInVO" class="com.acn.file.conversion.tool.vos.JsonToCsvInputVO"
-		scope="prototype" />
-
-
 	<!-- Spring Batch Job -->
 	<batch:job id="jsonToCsvBatchJob">
-		<!-- <batch:step id="formatJSONFile" next="jsonToCsvBatchStepId"> <batch:tasklet 
-			ref="formatJSONFileTasklet"> </batch:tasklet> </batch:step>
- -->
+
 		<batch:step id="jsonToCsvBatchStepId">
 			<batch:tasklet>
 				<batch:chunk reader="jsonToCsvFlatFileItemReader"
@@ -58,9 +51,14 @@
 		<batch:listeners>
 			<batch:listener ref="jobListener"></batch:listener>
 		</batch:listeners>
-
+		<batch:listeners>
+			<batch:listener ref="customReadListener"></batch:listener>
+		</batch:listeners>
 
 	</batch:job>
+
+	<bean id="customReadListener" 
+		class="com.acn.file.conversion.tool.listeners.CustomReadListener"></bean>
 
 
 	<bean id="skipListener" class="com.acn.file.conversion.tool.listeners.SkipListener"></bean>
@@ -70,27 +68,24 @@
 	<bean id="jobListener" class="com.acn.file.conversion.tool.listeners.JobListener">
 	</bean>
 
-	<bean id="formatJSONFileTasklet" class="com.acn.file.conversion.tool.utils.FormatJSONFileTasklet"></bean>
 
 	<!-- Reader -->
-	<bean id="jsonToCsvFlatFileItemReader" class="org.springframework.batch.item.file.FlatFileItemReader" scope="step">
+	<bean id="jsonToCsvFlatFileItemReader" class="org.springframework.batch.item.file.FlatFileItemReader"
+		scope="step">
 		<!-- Read a json file -->
 		<property name="resource" value="file:#{jobParameters['inputPath']}" />
 		<property name="recordSeparatorPolicy" ref="recordPolicy" />
 		<property name="lineMapper" ref="lineMapper" />
 	</bean>
 
-	<!-- <bean id="lineMapper" class="com.acn.file.conversion.tool.utils.JsonToCsvLineMapper">
+	<bean id="lineMapper" class="com.acn.file.conversion.tool.utils.JsonToCsvLineMapper">
 		<property name="delegate" ref="lineMapperType" />
 	</bean>
 
 	<bean id="lineMapperType"
 		class="org.springframework.batch.item.file.mapping.JsonLineMapper">
-	</bean> -->
-	
-	<bean id="lineMapper"
-		class="org.springframework.batch.item.file.mapping.JsonLineMapper">
 	</bean>
+
 
 	<bean id="recordPolicy"
 		class="org.springframework.batch.item.file.separator.JsonRecordSeparatorPolicy" />

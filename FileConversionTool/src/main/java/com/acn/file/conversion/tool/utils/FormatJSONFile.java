@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -16,15 +17,14 @@ public class FormatJSONFile {
 
 	private static final Logger LOGGER = Logger
 			.getLogger(FormatJSONFile.class);
+	
+	public static String outputHeader = "";
+	public static Map<String, Object> headerForInVoMap = new LinkedHashMap<String, Object>();
 
-	public Map<String, Object> formatJsonFile(String inputFilePath, String outputFilePath) {
+	public  Map<String, Object> formatJsonFile(String inputFilePath, String outputFilePath) {
 
-		Map<String, Object> headerForInVoMap = new HashMap<String, Object>();
+		
 		try {
-			
-			System.out.println("Output File path = "+outputFilePath);
-			System.out.println("Input File path = "+inputFilePath);
-			
 			
 			File file = new File(inputFilePath);
 			Reader reader = new FileReader(file);
@@ -55,7 +55,7 @@ public class FormatJSONFile {
 					JSONObject jsonObject = new JSONObject(s1.substring(0,
 							s1.indexOf("\n")));
 					Iterator<String> iterator = jsonObject.keys();
-					String outputHeader = "";
+					
 					
 					
 					while (iterator.hasNext()) {
