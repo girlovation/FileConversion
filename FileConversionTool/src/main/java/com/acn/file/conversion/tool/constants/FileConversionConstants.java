@@ -22,11 +22,11 @@ public class FileConversionConstants {
 	
 	public static final String COLON = "Colon";
 	
-	public static final String CLASS_FOLDER_PATH = "C:\\Users\\riddhi.dilip.vyas\\Accenture\\Git\\FileConversionTool\\FileConversionTool";
+	public static final String CLASS_FOLDER_PATH = "FileConversionTool";
 	
 	public static final String JSON_INPUT_VO = "DynamicJsonInVO";
 	
-	public static final String JSON_INPUT_VO_PATH = "C:\\Users\\riddhi.dilip.vyas\\Accenture\\Git\\FileConversionTool\\FileConversionTool\\src\\main\\java\\com\\acn\\file\\conversion\\tool\\vo\\DynamicJsonInVO.java";
+	public static final String JSON_INPUT_VO_PATH = "src\\main\\java\\com\\acn\\file\\conversion\\tool\\vo\\DynamicJsonInVO.java";
 	
 	
 
