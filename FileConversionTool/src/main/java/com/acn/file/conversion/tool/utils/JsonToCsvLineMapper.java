@@ -25,12 +25,6 @@ public class JsonToCsvLineMapper implements LineMapper<DynamicJsonInVO> {
 
 		LinkedHashMap<String, Object> recordAsMap = (LinkedHashMap<String, Object>) delegate
 				.mapLine(line, lineNumber);
-
-		/*for (Map.Entry<String, Object> entry : recordAsMap.entrySet()) {
-			System.out.println(entry.getKey() + ":" + entry.getValue());
-			
-		}*/
-		
   
 		
 		return DynamicJsonInVO.setAllFields(recordAsMap);

@@ -16,6 +16,7 @@ import com.acn.file.conversion.tool.constants.FileConversionConstants;
 
 public class FileConversionEntryPage extends JPanel implements ActionListener {
 
+	private static final long serialVersionUID = 2853914798605190348L;
 	JFrame fileConversionMainframe;
 	ButtonGroup radioGroup;
 

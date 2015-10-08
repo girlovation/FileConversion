@@ -28,6 +28,8 @@ public class FileConversionConstants {
 	
 	public static final String JSON_INPUT_VO_PATH = "src\\main\\java\\com\\acn\\file\\conversion\\tool\\vo\\DynamicJsonInVO.java";
 	
+	public static final String JSON_LINE_MAPPER_PATH="src\\main\\java\\com\\acn\\file\\conversion\\tool\\utils\\JsonToCsvLineMapper.java";
+	
 	
 
 }

@@ -134,6 +134,7 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 					.formatJsonFile(inputFilePathTextField.getText(),
 							inputFilePathTextField.getText()+".formatted");
 
+			// dynamiccaly create input VO
 			CreateDynamicClass createDynamicClassObj = new CreateDynamicClass();
 			JavaFileObject javaFileObj = createDynamicClassObj.generateJava(
 					FileConversionConstants.JSON_INPUT_VO, inputHeaderMap);
@@ -141,11 +142,11 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 			Iterable<? extends JavaFileObject> files = Arrays
 					.asList(javaFileObj);
 
-			// 2.Compile your files by JavaCompiler
+			// Compile input VO by JavaCompiler
 			createDynamicClassObj.compile(files);
 
-			
-			File[] mapperFiles = {new File("src\\main\\java\\com\\acn\\file\\conversion\\tool\\utils\\JsonToCsvLineMapper.java")};
+			// compile json line mapper 
+			File[] mapperFiles = {new File(FileConversionConstants.JSON_LINE_MAPPER_PATH)};
 			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 			StandardJavaFileManager fileManager = compiler
 					.getStandardFileManager(null, null, null);
@@ -155,7 +156,7 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 			
 			createDynamicClassObj.compile(compilationUnits1);
 			
-
+			// run the spring batch
 			try {
 				CommandLineJobRunner.main(new String[] {
 						"applicationContext.xml", "jsonToCsvBatchJob",
