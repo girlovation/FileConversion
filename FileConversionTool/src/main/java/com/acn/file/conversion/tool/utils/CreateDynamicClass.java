@@ -20,6 +20,7 @@ import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
 import com.acn.file.conversion.tool.constants.FileConversionConstants;
+import com.acn.file.conversion.tool.gui.JsonToCsvPage;
 import com.acn.file.conversion.tool.utils.DynamicCompiler.InMemoryJavaFileObject;
 
 public class CreateDynamicClass {
@@ -27,7 +28,7 @@ public class CreateDynamicClass {
 	public JavaFileObject generateJava(String className, Map<String, Object> map) {
 
 		StringBuffer classContent = new StringBuffer(
-				"package com.acn.file.conversion.tool.vo; \n import java.util.LinkedHashMap; \n  public class ")
+				"package com.acn.file.conversion.tool.vo; \n import java.util.LinkedHashMap; \n import com.acn.file.conversion.tool.constants.FileConversionConstants; \n  public class ")
 				.append(className).append(" {\n");
 
 		// first fields
@@ -49,15 +50,24 @@ public class CreateDynamicClass {
 			classContent.append("\tpublic ").append(type).append(" get")
 					.append(name.substring(0, 1).toUpperCase())
 					.append(name.substring(1)).append("() {\n\t\t");
-			classContent.append("return this.").append(name).append(";\n\t}");
+			classContent.append("return this.").append(name).append(";\n\t}\n");
 
 			// setter.
 			classContent.append("\tpublic void").append(" set")
 					.append(name.substring(0, 1).toUpperCase())
 					.append(name.substring(1)).append("(").append(type)
 					.append(" ").append(name).append(") {\n\t\t");
-			classContent.append("this.").append(name).append(" = ")
-					.append(name).append(";\n\t}");
+			
+			
+			if(JsonToCsvPage.isForceWrapInDoubleQuotes()){
+				
+				
+				classContent.append("this.").append(name).append(" = ").append("FileConversionConstants.DOUBLE_QUOTE + ")
+				.append(name).append("+ FileConversionConstants.DOUBLE_QUOTE").append(";\n\t}");
+			}else{
+				classContent.append("this.").append(name).append(" = ")
+				.append(name).append(";\n\t}");
+			}
 		}
 
 		// hardcoded method signature

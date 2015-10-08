@@ -5,8 +5,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.Map;
 
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -28,11 +30,30 @@ import com.acn.file.conversion.tool.utils.CreateDynamicClass;
 import com.acn.file.conversion.tool.utils.FormatJSONFile;
 
 public class JsonToCsvPage extends JPanel implements ActionListener {
-	
+
 	private static final long serialVersionUID = 1766080291530852959L;
 	JFrame jsonToCsvFrame;
 	JTextField inputFilePathTextField;
 	JTextField outputFilePathTextField;
+	ButtonGroup fieldSeparatorRadioGroup;
+	private static boolean forceWrapInDoubleQuotes;
+	JRadioButton wrapValuesRadioButton;
+	
+	
+
+	/**
+	 * @return the forceWrapInDoubleQuotes
+	 */
+	public static boolean isForceWrapInDoubleQuotes() {
+		return forceWrapInDoubleQuotes;
+	}
+
+	/**
+	 * @param forceWrapInDoubleQuotes the forceWrapInDoubleQuotes to set
+	 */
+	public static void setForceWrapInDoubleQuotes(boolean forceWrapInDoubleQuotes) {
+		JsonToCsvPage.forceWrapInDoubleQuotes = forceWrapInDoubleQuotes;
+	}
 
 	public JsonToCsvPage() {
 
@@ -63,13 +84,13 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 				FileConversionConstants.FIELD_SEPARATOR);
 
 		JRadioButton semiColon = new JRadioButton(
-				FileConversionConstants.SEMICOLON, true);
-		JRadioButton comma = new JRadioButton(FileConversionConstants.COMMA,
+				FileConversionConstants.COMMA, true);
+		JRadioButton comma = new JRadioButton(FileConversionConstants.SEMICOLON,
 				false);
 		JRadioButton colon = new JRadioButton(FileConversionConstants.COLON,
 				false);
 
-		JRadioButton wrapValuesRadioButton = new JRadioButton(
+		wrapValuesRadioButton = new JRadioButton(
 				FileConversionConstants.WRAP_VALUES, false);
 
 		JRadioButton includeHeadersRadioButton = new JRadioButton(
@@ -79,7 +100,7 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 
 		jsonToCsvSubmitButton.addActionListener(this);
 
-		ButtonGroup fieldSeparatorRadioGroup = new ButtonGroup();
+		fieldSeparatorRadioGroup = new ButtonGroup();
 
 		fieldSeparatorRadioGroup.add(semiColon);
 		fieldSeparatorRadioGroup.add(comma);
@@ -122,17 +143,48 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 
 	}
 
+	public String getSelectedButtonText(ButtonGroup buttonGroup) {
+		for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons
+				.hasMoreElements();) {
+			AbstractButton button = buttons.nextElement();
+
+			if (button.isSelected()) {
+				if (button.getText().equals(FileConversionConstants.SEMICOLON)) {
+					return ";";
+				} else if (button.getText().equals(
+						FileConversionConstants.COMMA)) {
+					return ",";
+				} else {
+					return ":";
+				}
+			}
+		}
+		
+		return null;
+	}
+
 	public void actionPerformed(ActionEvent e) {
 
 		if (null != inputFilePathTextField.getText()
 				&& !inputFilePathTextField.getText().equalsIgnoreCase("")
 				&& null != outputFilePathTextField.getText()
 				&& !outputFilePathTextField.getText().equalsIgnoreCase("")) {
+			
+			String outputFieldSeperator = getSelectedButtonText(fieldSeparatorRadioGroup);
+			
+			if(wrapValuesRadioButton.isSelected()){
+				setForceWrapInDoubleQuotes(true);
+			}else{
+				setForceWrapInDoubleQuotes(false);
+			}
+			
+			System.out.println("SELECTED ***************"+wrapValuesRadioButton.isSelected());
+			
 
 			FormatJSONFile formatJSONFileObj = new FormatJSONFile();
 			Map<String, Object> inputHeaderMap = formatJSONFileObj
 					.formatJsonFile(inputFilePathTextField.getText(),
-							inputFilePathTextField.getText()+".formatted");
+							inputFilePathTextField.getText() + ".formatted");
 
 			// dynamiccaly create input VO
 			CreateDynamicClass createDynamicClassObj = new CreateDynamicClass();
@@ -145,24 +197,28 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 			// Compile input VO by JavaCompiler
 			createDynamicClassObj.compile(files);
 
-			// compile json line mapper 
-			File[] mapperFiles = {new File(FileConversionConstants.JSON_LINE_MAPPER_PATH)};
+			// compile json line mapper
+			File[] mapperFiles = { new File(
+					FileConversionConstants.JSON_LINE_MAPPER_PATH) };
 			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 			StandardJavaFileManager fileManager = compiler
 					.getStandardFileManager(null, null, null);
 
 			Iterable<? extends JavaFileObject> compilationUnits1 = fileManager
 					.getJavaFileObjectsFromFiles(Arrays.asList(mapperFiles));
-			
+
 			createDynamicClassObj.compile(compilationUnits1);
-			
+
 			// run the spring batch
 			try {
 				CommandLineJobRunner.main(new String[] {
-						"applicationContext.xml", "jsonToCsvBatchJob",
-						"inputPath="+inputFilePathTextField.getText()+".formatted" ,
+						"applicationContext.xml",
+						"jsonToCsvBatchJob",
+						"inputPath=" + inputFilePathTextField.getText()
+								+ ".formatted",
 						"outputPath=" + outputFilePathTextField.getText(),
-						"outputHeaders="+ FormatJSONFile.outputHeader});
+						"outputHeaders=" + FormatJSONFile.outputHeader ,
+						"outputFieldSeperator="+outputFieldSeperator});
 			} catch (Exception ex) {
 				ex.printStackTrace();
 

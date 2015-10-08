@@ -2,6 +2,10 @@ package com.acn.file.conversion.tool.constants;
 
 public class FileConversionConstants {
 	
+	public static final String DOUBLE_QUOTE = "\"";
+	
+	public static final String BACK_SLASH = "\\";
+	
 	public static final String JSON_TO_CSV = "Json to CSV";
 	
 	public static final String INPUT_FILE_PATH = "Enter the Input File path:";
