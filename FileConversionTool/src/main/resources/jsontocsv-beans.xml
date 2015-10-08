@@ -35,14 +35,15 @@
 		<batch:step id="jsonToCsvBatchStepId">
 			<batch:tasklet>
 				<batch:chunk reader="jsonToCsvFlatFileItemReader"
-					writer="jsonToCsvFlatFileItemWriter" commit-interval="${json_to_csv.chunck_size}"
-					skip-limit="${json_to_csv.skip_limit}">
+					 writer="jsonToCsvFlatFileItemWriter"
+					commit-interval="${json_to_csv.chunck_size}" skip-limit="${json_to_csv.skip_limit}">
 					<batch:skippable-exception-classes>
 						<batch:include
 							class="org.springframework.batch.item.file.FlatFileParseException" />
 					</batch:skippable-exception-classes>
 				</batch:chunk>
 				<batch:listeners>
+					<batch:listener ref="customReadListener"></batch:listener>
 					<batch:listener ref="skipListener">
 					</batch:listener>
 				</batch:listeners>
@@ -51,13 +52,12 @@
 		<batch:listeners>
 			<batch:listener ref="jobListener"></batch:listener>
 		</batch:listeners>
-		<batch:listeners>
-			<batch:listener ref="customReadListener"></batch:listener>
-		</batch:listeners>
-
 	</batch:job>
 
-	<bean id="customReadListener" 
+	<!-- <bean id="jsonTocsvProcessor"
+		class="com.acn.file.conversion.tool.processor.JsonToCsvProcessor"></bean> -->
+	
+	<bean id="customReadListener"
 		class="com.acn.file.conversion.tool.listeners.CustomReadListener"></bean>
 
 
@@ -73,7 +73,9 @@
 	<bean id="jsonToCsvFlatFileItemReader" class="org.springframework.batch.item.file.FlatFileItemReader"
 		scope="step">
 		<!-- Read a json file -->
-		<property name="resource" value="file:#{jobParameters['inputPath']}" />
+		<property name="resource" value="file:#{jobParameters['inputPath']}" 
+			/>
+		<!-- <property name="resource" value="file:C:\Pratibha\Test.json" /> -->
 		<property name="recordSeparatorPolicy" ref="recordPolicy" />
 		<property name="lineMapper" ref="lineMapper" />
 	</bean>
@@ -93,7 +95,9 @@
 
 	<bean class="org.springframework.batch.item.file.FlatFileItemWriter"
 		id="jsonToCsvFlatFileItemWriter" scope="step">
-		<property name="resource" value="file:#{jobParameters['outputPath']}" />
+		<property name="resource" value="file:#{jobParameters['outputPath']}" 
+			/>
+		<!-- <property name="resource" value="file:C:\Pratibha\Test.csv" /> -->
 		<!-- <property name="headerCallback"> <bean class="com.acn.file.conversion.tool.vos.ProductHeader" 
 			/> </property> -->
 		<property name="lineAggregator">
@@ -103,7 +107,7 @@
 				<property name="fieldExtractor">
 					<bean
 						class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">
-						<property name="names" value="${json_headers}" />
+						<property name="names" value="#{jobParameters['outputHeaders']}" />
 					</bean>
 				</property>
 			</bean>

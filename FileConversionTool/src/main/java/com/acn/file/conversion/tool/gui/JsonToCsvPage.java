@@ -3,8 +3,10 @@ package com.acn.file.conversion.tool.gui;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Arrays;
 import java.util.Map;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -14,7 +16,10 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
 
 import org.springframework.batch.core.launch.support.CommandLineJobRunner;
 
@@ -23,7 +28,8 @@ import com.acn.file.conversion.tool.utils.CreateDynamicClass;
 import com.acn.file.conversion.tool.utils.FormatJSONFile;
 
 public class JsonToCsvPage extends JPanel implements ActionListener {
-
+	
+	private static final long serialVersionUID = 1766080291530852959L;
 	JFrame jsonToCsvFrame;
 	JTextField inputFilePathTextField;
 	JTextField outputFilePathTextField;
@@ -124,28 +130,42 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 				&& !outputFilePathTextField.getText().equalsIgnoreCase("")) {
 
 			FormatJSONFile formatJSONFileObj = new FormatJSONFile();
-			Map<String, Object> inputHeaderMap = formatJSONFileObj.formatJsonFile(inputFilePathTextField.getText(),
-					outputFilePathTextField.getText());
-			
-			System.out.println(FormatJSONFile.outputHeader);
-			
+			Map<String, Object> inputHeaderMap = formatJSONFileObj
+					.formatJsonFile(inputFilePathTextField.getText(),
+							inputFilePathTextField.getText()+".formatted");
+
 			CreateDynamicClass createDynamicClassObj = new CreateDynamicClass();
-			JavaFileObject javaFileObj = createDynamicClassObj.generateJava(FileConversionConstants.JSON_INPUT_VO, inputHeaderMap);
-			Iterable<? extends JavaFileObject> files = Arrays.asList(javaFileObj);
+			JavaFileObject javaFileObj = createDynamicClassObj.generateJava(
+					FileConversionConstants.JSON_INPUT_VO, inputHeaderMap);
+
+			Iterable<? extends JavaFileObject> files = Arrays
+					.asList(javaFileObj);
 
 			// 2.Compile your files by JavaCompiler
 			createDynamicClassObj.compile(files);
+
 			
+			File[] mapperFiles = {new File("src\\main\\java\\com\\acn\\file\\conversion\\tool\\utils\\JsonToCsvLineMapper.java")};
+			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+			StandardJavaFileManager fileManager = compiler
+					.getStandardFileManager(null, null, null);
+
+			Iterable<? extends JavaFileObject> compilationUnits1 = fileManager
+					.getJavaFileObjectsFromFiles(Arrays.asList(mapperFiles));
+			
+			createDynamicClassObj.compile(compilationUnits1);
+			
+
 			try {
-				CommandLineJobRunner.main(new String[] { "applicationContext.xml",
-						"jsonToCsvBatchJob",
-						"inputPath=" + inputFilePathTextField.getText(),
-						"outputPath=" + outputFilePathTextField.getText() });
+				CommandLineJobRunner.main(new String[] {
+						"applicationContext.xml", "jsonToCsvBatchJob",
+						"inputPath="+inputFilePathTextField.getText()+".formatted" ,
+						"outputPath=" + outputFilePathTextField.getText(),
+						"outputHeaders="+ FormatJSONFile.outputHeader});
 			} catch (Exception ex) {
 				ex.printStackTrace();
-				
-				JOptionPane.showMessageDialog(jsonToCsvFrame,ex.getMessage()
-						);
+
+				JOptionPane.showMessageDialog(jsonToCsvFrame, ex.getMessage());
 			}
 
 		} else {

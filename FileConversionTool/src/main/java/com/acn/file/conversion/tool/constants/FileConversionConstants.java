@@ -22,7 +22,7 @@ public class FileConversionConstants {
 	
 	public static final String COLON = "Colon";
 	
-	public static final String CLASS_FOLDER_PATH = "FileConversionTool";
+	public static final String CLASS_FOLDER_PATH = ".\\target\\classes";
 	
 	public static final String JSON_INPUT_VO = "DynamicJsonInVO";
 	

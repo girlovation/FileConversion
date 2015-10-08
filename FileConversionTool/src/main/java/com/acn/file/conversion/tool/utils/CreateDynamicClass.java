@@ -4,12 +4,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
 
 import javax.tools.Diagnostic;
@@ -19,9 +19,8 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
-import com.acn.file.conversion.tool.constants.DynamicCompiler.InMemoryJavaFileObject;
 import com.acn.file.conversion.tool.constants.FileConversionConstants;
-import com.acn.file.conversion.tool.vo.DynamicJsonInV;
+import com.acn.file.conversion.tool.utils.DynamicCompiler.InMemoryJavaFileObject;
 
 public class CreateDynamicClass {
 
@@ -109,23 +108,6 @@ public class CreateDynamicClass {
 		return javaFileObj;
 	}
 
-	/*
-	 * public static void main(String args[]) { CreateDynamicClass myObj = new
-	 * CreateDynamicClass();
-	 * 
-	 * Map<String, Object> testMap = new HashMap<String, Object>();
-	 * 
-	 * testMap.put("iD", "String"); testMap.put("name", "String");
-	 * 
-	 * JavaFileObject file =
-	 * myObj.generateJava(FileConversionConstants.JSON_INPUT_VO, testMap);
-	 * 
-	 * Iterable<? extends JavaFileObject> files = Arrays.asList(file);
-	 * 
-	 * // 2.Compile your files by JavaCompiler compile(files);
-	 * 
-	 * }
-	 */
 
 	public static class MyDiagnosticListener implements
 			DiagnosticListener<JavaFileObject> {
@@ -140,8 +122,8 @@ public class CreateDynamicClass {
 		}
 	}
 
-	/** compile your files by JavaCompiler */
-	public void compile(Iterable<? extends JavaFileObject> files) {
+
+	public void compile(Iterable<? extends JavaFileObject> files){
 		// get system compiler:
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 
@@ -153,6 +135,7 @@ public class CreateDynamicClass {
 		// specify classes output folder
 		Iterable options = Arrays.asList("-d",
 				FileConversionConstants.CLASS_FOLDER_PATH);
+		
 		JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager,
 				diagnosticListner, options, null, files);
 		Boolean result = task.call();
@@ -161,4 +144,36 @@ public class CreateDynamicClass {
 		}
 	}
 
+	public void compileNonDynamicClass(File file, String JavaClassName){
+		
+		File root = new File(FileConversionConstants.CLASS_FOLDER_PATH + "\\com\\acn\\file\\conversion\\tool\\utils\\");
+		// Compile source file.
+		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+		int i = compiler.run(null, null, null, file.getAbsolutePath());
+
+		// Load and instantiate compiled class.
+		URLClassLoader classLoader;
+		Class<?> cls;
+		Object instance = null;
+		try {
+			classLoader = URLClassLoader.newInstance(new URL[] { root.toURI().toURL() });
+			cls = Class.forName(JavaClassName);
+			instance = cls.newInstance();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		
+	}
+	
 }

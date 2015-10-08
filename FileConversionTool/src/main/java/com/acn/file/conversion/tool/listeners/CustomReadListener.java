@@ -4,15 +4,14 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepListener;
 import org.springframework.batch.core.listener.ItemListenerSupport;
 
-public class CustomReadListener extends ItemListenerSupport implements StepListener {
+import com.acn.file.conversion.tool.vo.DynamicJsonInVO;
 
-    private StepExecution stepExecution;
+public class CustomReadListener extends ItemListenerSupport<DynamicJsonInVO, DynamicJsonInVO> implements StepListener {
 
     public void beforeStep(StepExecution stepExecution) {
-        this.stepExecution = stepExecution;
     }
 
-    public void afterRead(Object item) {
+    public void afterRead(DynamicJsonInVO item) {
         System.out.println("Called after read");
     }
 }

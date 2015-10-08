@@ -1,15 +1,10 @@
 package com.acn.file.conversion.tool.utils;
 
 import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-
-import javax.tools.JavaFileObject;
 
 import org.springframework.batch.item.file.LineMapper;
 import org.springframework.batch.item.file.mapping.JsonLineMapper;
 
-import com.acn.file.conversion.tool.constants.DynamicCompiler.InMemoryJavaFileObject;
 import com.acn.file.conversion.tool.vo.DynamicJsonInVO;
 
 public class JsonToCsvLineMapper implements LineMapper<DynamicJsonInVO> {
