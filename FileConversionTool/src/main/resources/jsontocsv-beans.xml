@@ -97,13 +97,12 @@
 		id="jsonToCsvFlatFileItemWriter" scope="step">
 		<property name="resource" value="file:#{jobParameters['outputPath']}" 
 			/>
-		<!-- <property name="resource" value="file:C:\Pratibha\Test.csv" /> -->
 		<!-- <property name="headerCallback"> <bean class="com.acn.file.conversion.tool.vos.ProductHeader" 
 			/> </property> -->
 		<property name="lineAggregator">
 			<bean
 				class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">
-				<property name="delimiter" value="${json_to_csv.delimiter.writer}" />
+				<property name="delimiter" value="#{jobParameters['outputFieldSeperator']}" />
 				<property name="fieldExtractor">
 					<bean
 						class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">
