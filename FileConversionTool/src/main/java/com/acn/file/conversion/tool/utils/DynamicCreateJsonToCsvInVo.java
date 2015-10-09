@@ -13,7 +13,7 @@ import com.acn.file.conversion.tool.constants.FileConversionConstants;
 import com.acn.file.conversion.tool.gui.JsonToCsvPage;
 import com.acn.file.conversion.tool.utils.DynamicCompiler.InMemoryJavaFileObject;
 
-public class DynamicJsonToCsvInVo {
+public class DynamicCreateJsonToCsvInVo {
 
 	public JavaFileObject generateJava(String className, Map<String, Object> map) {
 

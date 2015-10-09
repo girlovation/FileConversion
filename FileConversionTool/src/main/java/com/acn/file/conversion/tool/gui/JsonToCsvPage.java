@@ -27,7 +27,7 @@ import org.springframework.batch.core.launch.support.CommandLineJobRunner;
 
 import com.acn.file.conversion.tool.constants.FileConversionConstants;
 import com.acn.file.conversion.tool.utils.DynamicCompiler;
-import com.acn.file.conversion.tool.utils.DynamicJsonToCsvInVo;
+import com.acn.file.conversion.tool.utils.DynamicCreateJsonToCsvInVo;
 import com.acn.file.conversion.tool.utils.FormatJSONFile;
 
 public class JsonToCsvPage extends JPanel implements ActionListener {
@@ -186,9 +186,9 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 							inputFilePathTextField.getText() + ".formatted");
 
 			// dynamiccaly create input VO
-			DynamicJsonToCsvInVo dynamicJsonToCsvInVo = new DynamicJsonToCsvInVo();
+			DynamicCreateJsonToCsvInVo dynamicCreateJsonToCsvInVo = new DynamicCreateJsonToCsvInVo();
 			DynamicCompiler dynamicCompiler = new DynamicCompiler();
-			JavaFileObject javaFileObj = dynamicJsonToCsvInVo.generateJava(
+			JavaFileObject javaFileObj = dynamicCreateJsonToCsvInVo.generateJava(
 					FileConversionConstants.JSON_INPUT_VO, inputHeaderMap);
 
 			Iterable<? extends JavaFileObject> files = Arrays
