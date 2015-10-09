@@ -26,7 +26,8 @@ import javax.tools.ToolProvider;
 import org.springframework.batch.core.launch.support.CommandLineJobRunner;
 
 import com.acn.file.conversion.tool.constants.FileConversionConstants;
-import com.acn.file.conversion.tool.utils.CreateDynamicClass;
+import com.acn.file.conversion.tool.utils.DynamicCompiler;
+import com.acn.file.conversion.tool.utils.DynamicJsonToCsvInVo;
 import com.acn.file.conversion.tool.utils.FormatJSONFile;
 
 public class JsonToCsvPage extends JPanel implements ActionListener {
@@ -38,8 +39,6 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 	ButtonGroup fieldSeparatorRadioGroup;
 	private static boolean forceWrapInDoubleQuotes;
 	JRadioButton wrapValuesRadioButton;
-	
-	
 
 	/**
 	 * @return the forceWrapInDoubleQuotes
@@ -49,9 +48,11 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 	}
 
 	/**
-	 * @param forceWrapInDoubleQuotes the forceWrapInDoubleQuotes to set
+	 * @param forceWrapInDoubleQuotes
+	 *            the forceWrapInDoubleQuotes to set
 	 */
-	public static void setForceWrapInDoubleQuotes(boolean forceWrapInDoubleQuotes) {
+	public static void setForceWrapInDoubleQuotes(
+			boolean forceWrapInDoubleQuotes) {
 		JsonToCsvPage.forceWrapInDoubleQuotes = forceWrapInDoubleQuotes;
 	}
 
@@ -85,8 +86,8 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 
 		JRadioButton semiColon = new JRadioButton(
 				FileConversionConstants.COMMA, true);
-		JRadioButton comma = new JRadioButton(FileConversionConstants.SEMICOLON,
-				false);
+		JRadioButton comma = new JRadioButton(
+				FileConversionConstants.SEMICOLON, false);
 		JRadioButton colon = new JRadioButton(FileConversionConstants.COLON,
 				false);
 
@@ -159,7 +160,7 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 				}
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -169,17 +170,17 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 				&& !inputFilePathTextField.getText().equalsIgnoreCase("")
 				&& null != outputFilePathTextField.getText()
 				&& !outputFilePathTextField.getText().equalsIgnoreCase("")) {
-			
+
 			String outputFieldSeperator = getSelectedButtonText(fieldSeparatorRadioGroup);
-			
-			if(wrapValuesRadioButton.isSelected()){
+
+			if (wrapValuesRadioButton.isSelected()) {
 				setForceWrapInDoubleQuotes(true);
-			}else{
+			} else {
 				setForceWrapInDoubleQuotes(false);
 			}
-			
-			System.out.println("SELECTED ***************"+wrapValuesRadioButton.isSelected());
-			
+
+			System.out.println("SELECTED ***************"
+					+ wrapValuesRadioButton.isSelected());
 
 			FormatJSONFile formatJSONFileObj = new FormatJSONFile();
 			Map<String, Object> inputHeaderMap = formatJSONFileObj
@@ -187,15 +188,16 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 							inputFilePathTextField.getText() + ".formatted");
 
 			// dynamiccaly create input VO
-			CreateDynamicClass createDynamicClassObj = new CreateDynamicClass();
-			JavaFileObject javaFileObj = createDynamicClassObj.generateJava(
+			DynamicJsonToCsvInVo dynamicJsonToCsvInVo = new DynamicJsonToCsvInVo();
+			DynamicCompiler dynamicCompiler = new DynamicCompiler();
+			JavaFileObject javaFileObj = dynamicJsonToCsvInVo.generateJava(
 					FileConversionConstants.JSON_INPUT_VO, inputHeaderMap);
 
 			Iterable<? extends JavaFileObject> files = Arrays
 					.asList(javaFileObj);
 
 			// Compile input VO by JavaCompiler
-			createDynamicClassObj.compile(files);
+			dynamicCompiler.compile(files);
 
 			// compile json line mapper
 			File[] mapperFiles = { new File(
@@ -207,7 +209,7 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 			Iterable<? extends JavaFileObject> compilationUnits1 = fileManager
 					.getJavaFileObjectsFromFiles(Arrays.asList(mapperFiles));
 
-			createDynamicClassObj.compile(compilationUnits1);
+			dynamicCompiler.compile(compilationUnits1);
 
 			// run the spring batch
 			try {
@@ -217,8 +219,8 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 						"inputPath=" + inputFilePathTextField.getText()
 								+ ".formatted",
 						"outputPath=" + outputFilePathTextField.getText(),
-						"outputHeaders=" + FormatJSONFile.outputHeader ,
-						"outputFieldSeperator="+outputFieldSeperator});
+						"outputHeaders=" + FormatJSONFile.outputHeader,
+						"outputFieldSeperator=" + outputFieldSeperator });
 			} catch (Exception ex) {
 				ex.printStackTrace();
 

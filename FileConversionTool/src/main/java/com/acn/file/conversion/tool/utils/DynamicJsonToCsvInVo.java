@@ -21,9 +21,9 @@ import javax.tools.ToolProvider;
 
 import com.acn.file.conversion.tool.constants.FileConversionConstants;
 import com.acn.file.conversion.tool.gui.JsonToCsvPage;
-import com.acn.file.conversion.tool.utils.DynamicCompiler.InMemoryJavaFileObject;
+import com.acn.file.conversion.tool.utils.DynamicCompilerBKP.InMemoryJavaFileObject;
 
-public class CreateDynamicClass {
+public class DynamicJsonToCsvInVo {
 
 	public JavaFileObject generateJava(String className, Map<String, Object> map) {
 
@@ -119,71 +119,8 @@ public class CreateDynamicClass {
 	}
 
 
-	public static class MyDiagnosticListener implements
-			DiagnosticListener<JavaFileObject> {
-		public void report(Diagnostic<? extends JavaFileObject> diagnostic) {
-
-			System.out.println("Line Number->" + diagnostic.getLineNumber());
-			System.out.println("code->" + diagnostic.getCode());
-			System.out.println("Message->"
-					+ diagnostic.getMessage(Locale.ENGLISH));
-			System.out.println("Source->" + diagnostic.getSource());
-			System.out.println(" ");
-		}
-	}
-
-
-	public void compile(Iterable<? extends JavaFileObject> files){
-		// get system compiler:
-		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-
-		// for compilation diagnostic message processing on compilation
-		// WARNING/ERROR
-		MyDiagnosticListener diagnosticListner = new MyDiagnosticListener();
-		StandardJavaFileManager fileManager = compiler.getStandardFileManager(
-				diagnosticListner, Locale.ENGLISH, null);
-		// specify classes output folder
-		Iterable options = Arrays.asList("-d",
-				FileConversionConstants.CLASS_FOLDER_PATH);
-		
-		JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager,
-				diagnosticListner, options, null, files);
-		Boolean result = task.call();
-		if (result == true) {
-			System.out.println("Succeeded");
-		}
-	}
-
-	public void compileNonDynamicClass(File file, String JavaClassName){
-		
-		File root = new File(FileConversionConstants.CLASS_FOLDER_PATH + "\\com\\acn\\file\\conversion\\tool\\utils\\");
-		// Compile source file.
-		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-		int i = compiler.run(null, null, null, file.getAbsolutePath());
-
-		// Load and instantiate compiled class.
-		URLClassLoader classLoader;
-		Class<?> cls;
-		Object instance = null;
-		try {
-			classLoader = URLClassLoader.newInstance(new URL[] { root.toURI().toURL() });
-			cls = Class.forName(JavaClassName);
-			instance = cls.newInstance();
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-		
-		
-	}
 	
+
+		
+		
 }
