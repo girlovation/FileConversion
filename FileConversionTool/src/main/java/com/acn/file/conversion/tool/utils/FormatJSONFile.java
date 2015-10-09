@@ -5,22 +5,20 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONObject;
 
 public class FormatJSONFile {
 
-	private static final Logger LOGGER = Logger
-			.getLogger(FormatJSONFile.class);
+	//private static final Logger LOGGER = Logger.getLogger(FormatJSONFile.class);
 	
 	public static String outputHeader = "";
 	public static Map<String, Object> headerForInVoMap = new LinkedHashMap<String, Object>();
 
+	@SuppressWarnings("unchecked")
 	public  Map<String, Object> formatJsonFile(String inputFilePath, String outputFilePath) {
 
 		

@@ -9,7 +9,6 @@ import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
-import javax.tools.JavaFileObject.Kind;
 import javax.tools.SimpleJavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
@@ -41,14 +40,14 @@ public class DynamicCompiler {
 		StandardJavaFileManager fileManager = compiler.getStandardFileManager(
 				diagnosticListner, Locale.ENGLISH, null);
 		// specify classes output folder
-		Iterable options = Arrays.asList("-d",
+		Iterable<String> options = Arrays.asList("-d",
 				FileConversionConstants.CLASS_FOLDER_PATH);
 
 		JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager,
 				diagnosticListner, options, null, files);
 		Boolean result = task.call();
 		if (result == true) {
-			System.out.println("Succeeded");
+			//System.out.println("Succeeded");
 		}
 	}
 

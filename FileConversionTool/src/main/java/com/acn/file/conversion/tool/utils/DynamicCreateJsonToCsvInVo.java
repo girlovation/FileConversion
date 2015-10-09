@@ -18,7 +18,7 @@ public class DynamicCreateJsonToCsvInVo {
 	public JavaFileObject generateJava(String className, Map<String, Object> map) {
 
 		StringBuffer classContent = new StringBuffer(
-				"package com.acn.file.conversion.tool.vo; \n import java.util.LinkedHashMap; \n import com.acn.file.conversion.tool.constants.FileConversionConstants; \n  public class ")
+				"package com.acn.file.conversion.tool.vo; \n import java.util.LinkedHashMap; \n import java.util.Set; \n import com.acn.file.conversion.tool.constants.FileConversionConstants; \n  public class ")
 				.append(className).append(" {\n");
 
 		// first fields
@@ -47,33 +47,43 @@ public class DynamicCreateJsonToCsvInVo {
 					.append(name.substring(0, 1).toUpperCase())
 					.append(name.substring(1)).append("(").append(type)
 					.append(" ").append(name).append(") {\n\t\t");
-			
-			
-			if(JsonToCsvPage.isForceWrapInDoubleQuotes()){
-				
-				
-				classContent.append("this.").append(name).append(" = ").append("FileConversionConstants.DOUBLE_QUOTE + ")
-				.append(name).append("+ FileConversionConstants.DOUBLE_QUOTE").append(";\n\t}");
-			}else{
+
+			if (JsonToCsvPage.isForceWrapInDoubleQuotes()) {
+
 				classContent.append("this.").append(name).append(" = ")
-				.append(name).append(";\n\t}");
+						.append("FileConversionConstants.DOUBLE_QUOTE + ")
+						.append(name)
+						.append("+ FileConversionConstants.DOUBLE_QUOTE")
+						.append(";\n\t}");
+			} else {
+				classContent.append("this.").append(name).append(" = ")
+						.append(name).append(";\n\t}");
 			}
 		}
 
 		// hardcoded method signature
 
 		classContent
-				.append("\n\n\t public static DynamicJsonInVO setAllFields(LinkedHashMap<String, Object> valueMap) { \n\t\t DynamicJsonInVO tempDynamicObj = new DynamicJsonInVO();\n");
+				.append("\n\n\t public static DynamicJsonInVO setAllFields(LinkedHashMap<String, Object> valueMap) { \n\t\t DynamicJsonInVO tempDynamicObj = new DynamicJsonInVO();\n\t\t Set<String> keys = valueMap.keySet(); \n");
 
 		for (Entry<String, Object> field : map.entrySet()) {
 			String fieldName = field.getKey();
 
 			classContent
+					.append("\t\t if(valueMap.get(\"" + fieldName
+							+ "\")== null) { \n\t\t\t keys.remove(\""
+							+ fieldName + "\");\n")
+					.append("\t\t\t tempDynamicObj.set")
+					.append(fieldName.substring(0, 1).toUpperCase())
+					.append(fieldName.substring(1))
+					.append("(\"null\"); \n \t\t } else { \n")
 					.append("\t\t\t tempDynamicObj.set")
 					.append(fieldName.substring(0, 1).toUpperCase())
 					.append(fieldName.substring(1))
 					.append("(valueMap.get(\"" + fieldName
-							+ "\").toString()); \n");
+							+ "\").toString()); \n \t\t } \n");
+
+
 		}
 
 		classContent.append(" \t\t return tempDynamicObj; \n } \n }");
@@ -108,9 +118,4 @@ public class DynamicCreateJsonToCsvInVo {
 		return javaFileObj;
 	}
 
-
-	
-
-		
-		
 }
