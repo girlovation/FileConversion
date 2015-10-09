@@ -12,6 +12,6 @@ public class CustomReadListener extends ItemListenerSupport<DynamicJsonInVO, Dyn
     }
 
     public void afterRead(DynamicJsonInVO item) {
-        System.out.println("Called after read");
+        // System.out.println("Called after read");
     }
 }

@@ -179,8 +179,6 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 				setForceWrapInDoubleQuotes(false);
 			}
 
-			System.out.println("SELECTED ***************"
-					+ wrapValuesRadioButton.isSelected());
 
 			FormatJSONFile formatJSONFileObj = new FormatJSONFile();
 			Map<String, Object> inputHeaderMap = formatJSONFileObj

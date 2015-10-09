@@ -61,7 +61,7 @@ public class FormatJSONFile {
 					while (iterator.hasNext()) {
 						String key = (String) iterator.next();
 						headerForInVoMap.put(key, "String");
-						System.out.println(headerForInVoMap);
+						// System.out.println(headerForInVoMap);
 						if (!isFirstLine) {
 							outputHeader = outputHeader.concat(",").concat(key);
 							
