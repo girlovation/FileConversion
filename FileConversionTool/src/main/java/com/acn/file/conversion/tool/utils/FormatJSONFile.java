@@ -50,8 +50,14 @@ public class FormatJSONFile {
 				String s1 = s.replaceAll(searchString, replaceString);
 
 				if (isFirstLine) {
-					JSONObject jsonObject = new JSONObject(s1.substring(0,
-							s1.indexOf("\n")));
+					int lastLength = s1.indexOf("\n");
+					JSONObject jsonObject =null;
+					if(lastLength>0){
+						jsonObject = new JSONObject(s1.substring(0,
+								s1.indexOf("\n")));
+					}else{
+						jsonObject = new JSONObject(s1);
+					}
 					Iterator<String> iterator = jsonObject.keys();
 					
 					
