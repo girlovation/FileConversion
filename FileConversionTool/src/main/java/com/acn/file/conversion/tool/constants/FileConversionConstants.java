@@ -1,5 +1,10 @@
 package com.acn.file.conversion.tool.constants;
 
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+
+import com.acn.file.conversion.tool.gui.FileConversionEntryPage;
+
 public class FileConversionConstants {
 	
 	public static final String DOUBLE_QUOTE = "\"";
@@ -26,13 +31,18 @@ public class FileConversionConstants {
 	
 	public static final String COLON = "Colon";
 	
-	public static final String CLASS_FOLDER_PATH = ".\\target\\classes";
+	//public static final String CLASS_FOLDER_PATH = ".\\target\\classes";
+	
+	public static final String CLASS_FOLDER_PATH = FileSystems.getDefault().getPath(System.getProperty("user.home")).toString();
+
 	
 	public static final String JSON_INPUT_VO = "DynamicJsonInVO";
 	
-	public static final String JSON_INPUT_VO_PATH = "src\\main\\java\\com\\acn\\file\\conversion\\tool\\vo\\DynamicJsonInVO.java";
+	public static final String JSON_INPUT_VO_PATH = FileSystems.getDefault().getPath(System.getProperty("user.home"),  "DynamicJsonInVO.java").toString();
 	
-	public static final String JSON_LINE_MAPPER_PATH="src\\main\\java\\com\\acn\\file\\conversion\\tool\\utils\\JsonToCsvLineMapper.java";
+	//public static final String JSON_LINE_MAPPER_PATH="src\\main\\java\\com\\acn\\file\\conversion\\tool\\utils\\JsonToCsvLineMapper.java";
+	
+	public static final String JSON_LINE_MAPPER_PATH = FileConversionConstants.class.getClassLoader().getResource("JsonToCsvLineMapper.java").getPath().toString();
 	
 	
 
