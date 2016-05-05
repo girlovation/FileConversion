@@ -33,6 +33,8 @@ public class DynamicCompiler {
 	public void compile(Iterable<? extends JavaFileObject> files) {
 		// get system compiler:
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+		
+		System.out.println("COMPILER: "+compiler);
 
 		// for compilation diagnostic message processing on compilation
 		// WARNING/ERROR

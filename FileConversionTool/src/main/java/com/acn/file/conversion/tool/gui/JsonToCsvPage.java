@@ -28,6 +28,7 @@ import org.springframework.batch.core.launch.support.CommandLineJobRunner;
 import com.acn.file.conversion.tool.constants.FileConversionConstants;
 import com.acn.file.conversion.tool.utils.DynamicCompiler;
 import com.acn.file.conversion.tool.utils.DynamicCreateJsonToCsvInVo;
+import com.acn.file.conversion.tool.utils.DynamicJsonToCsvLineMapper;
 import com.acn.file.conversion.tool.utils.FormatJSONFile;
 
 public class JsonToCsvPage extends JPanel implements ActionListener {
@@ -179,7 +180,6 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 				setForceWrapInDoubleQuotes(false);
 			}
 
-
 			FormatJSONFile formatJSONFileObj = new FormatJSONFile();
 			Map<String, Object> inputHeaderMap = formatJSONFileObj
 					.formatJsonFile(inputFilePathTextField.getText(),
@@ -187,15 +187,22 @@ public class JsonToCsvPage extends JPanel implements ActionListener {
 
 			// dynamiccaly create input VO
 			DynamicCreateJsonToCsvInVo dynamicCreateJsonToCsvInVo = new DynamicCreateJsonToCsvInVo();
+			DynamicJsonToCsvLineMapper dynamicJsonToCsvLineMapper = new DynamicJsonToCsvLineMapper();
 			DynamicCompiler dynamicCompiler = new DynamicCompiler();
-			JavaFileObject javaFileObj = dynamicCreateJsonToCsvInVo.generateJava(
-					FileConversionConstants.JSON_INPUT_VO, inputHeaderMap);
+			JavaFileObject javaFileObj = dynamicCreateJsonToCsvInVo
+					.generateJava(FileConversionConstants.JSON_INPUT_VO,
+							inputHeaderMap);
+			JavaFileObject javaFileObj1 = dynamicJsonToCsvLineMapper
+					.generateJavaLineMapper();
 
 			Iterable<? extends JavaFileObject> files = Arrays
 					.asList(javaFileObj);
+			Iterable<? extends JavaFileObject> files1 = Arrays
+					.asList(javaFileObj1);
 
 			// Compile input VO by JavaCompiler
 			dynamicCompiler.compile(files);
+			dynamicCompiler.compile(files1);
 
 			// compile json line mapper
 			File[] mapperFiles = { new File(

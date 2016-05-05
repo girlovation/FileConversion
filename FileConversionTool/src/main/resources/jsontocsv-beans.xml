@@ -35,8 +35,8 @@
 		<batch:step id="jsonToCsvBatchStepId">
 			<batch:tasklet>
 				<batch:chunk reader="jsonToCsvFlatFileItemReader"
-					 writer="jsonToCsvFlatFileItemWriter"
-					commit-interval="${json_to_csv.chunck_size}" skip-limit="${json_to_csv.skip_limit}">
+					writer="jsonToCsvFlatFileItemWriter" commit-interval="${json_to_csv.chunck_size}"
+					skip-limit="${json_to_csv.skip_limit}">
 					<batch:skippable-exception-classes>
 						<batch:include
 							class="org.springframework.batch.item.file.FlatFileParseException" />
@@ -54,9 +54,8 @@
 		</batch:listeners>
 	</batch:job>
 
-	<!-- <bean id="jsonTocsvProcessor"
-		class="com.acn.file.conversion.tool.processor.JsonToCsvProcessor"></bean> -->
-	
+	<!-- <bean id="jsonTocsvProcessor" class="com.acn.file.conversion.tool.processor.JsonToCsvProcessor"></bean> -->
+
 	<bean id="customReadListener"
 		class="com.acn.file.conversion.tool.listeners.CustomReadListener"></bean>
 
@@ -73,14 +72,18 @@
 	<bean id="jsonToCsvFlatFileItemReader" class="org.springframework.batch.item.file.FlatFileItemReader"
 		scope="step">
 		<!-- Read a json file -->
-		<property name="resource" value="file:#{jobParameters['inputPath']}" 
-			/>
+		<property name="resource" value="file:#{jobParameters['inputPath']}" />
 		<!-- <property name="resource" value="file:C:\Pratibha\Test.json" /> -->
 		<property name="recordSeparatorPolicy" ref="recordPolicy" />
-		<property name="lineMapper" ref="lineMapper" />
+		<!-- <property name="lineMapper" ref="lineMapper" /> -->
+		<property name="lineMapperDynamic" ref="lineMapperDynamic" />
 	</bean>
 
 	<bean id="lineMapper" class="com.acn.file.conversion.tool.utils.JsonToCsvLineMapper">
+		<property name="delegate" ref="lineMapperType" />
+	</bean>
+
+	<bean id="lineMapperDynamic" class="com.acn.file.conversion.tool.utils.JsonToCsvLineMapper">
 		<property name="delegate" ref="lineMapperType" />
 	</bean>
 
@@ -95,8 +98,7 @@
 
 	<bean class="org.springframework.batch.item.file.FlatFileItemWriter"
 		id="jsonToCsvFlatFileItemWriter" scope="step">
-		<property name="resource" value="file:#{jobParameters['outputPath']}" 
-			/>
+		<property name="resource" value="file:#{jobParameters['outputPath']}" />
 		<!-- <property name="headerCallback"> <bean class="com.acn.file.conversion.tool.vos.ProductHeader" 
 			/> </property> -->
 		<property name="lineAggregator">

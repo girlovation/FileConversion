@@ -83,7 +83,6 @@ public class DynamicCreateJsonToCsvInVo {
 					.append("(valueMap.get(\"" + fieldName
 							+ "\").toString()); \n \t\t } \n");
 
-
 		}
 
 		classContent.append(" \t\t return tempDynamicObj; \n } \n }");
@@ -94,6 +93,8 @@ public class DynamicCreateJsonToCsvInVo {
 		try {
 
 			File file = new File(FileConversionConstants.JSON_INPUT_VO_PATH);
+			System.out.println("FILE JSON INPUT PATH: "
+					+ FileConversionConstants.JSON_INPUT_VO_PATH);
 
 			// if file doesnt exists, then create it
 			if (!file.exists()) {
