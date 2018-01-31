@@ -1,6 +1,10 @@
 package com.acn.file.conversion.tool.gui;
+<<<<<<< HEAD
 //Temp changes
 
+=======
+//TEMP FROM GIT DIRECTLY
+>>>>>>> cb018e32e038531dac8e522efae4017939653412
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
